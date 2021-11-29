@@ -1,19 +1,20 @@
----
-author:
-- Picard Simon
-date: December 12, 2014
-title: |
-  Université Libre de Bruxelles\
-  INFO-F-404: Real-Time Operating Systems\
-  2014 - 2015 Project 2: Game of life
----
+# multiprocessing-game-of-life
 
-# Introduction
+
+## Quickstart
+
+```
+git clone git@github.com:simonpicard/multiprocessing-game-of-life.git
+cd multiprocessing-game-of-life
+make
+```
+
+## Introduction
 
 The purpose of the project is to implement a \"Game of life\" simulator
 using several core at the same time.
 
-# Choice of implementation
+## Choice of implementation
 
 The program should output a image, I choose the format pbm because it is
 really small. There is some headers including the width and the heigh of
@@ -30,7 +31,7 @@ Note : the default settings will generate an image where each cell is
 one pixel, an additional parameter can be set after the intermediate, it
 is the size of the border of a cell in pixels.
 
-# Protocol
+## Protocol
 
 The idea of the multiprocessor execution was to divide the matrix into
 several sub matrix and each processor will compute a sub matrix, the
@@ -69,9 +70,9 @@ using a MPI_gather.
 ![Activity diagram](doc/activity.png){#Activity diagram}
 :::
 
-# Algorithm
+## Algorithm
 
-## Get slice size
+### Get slice size
 
 With a number N, a width x and a height y, the output is two number a
 and b such that a\*b = N\
@@ -84,7 +85,7 @@ The last step will divide the matrix in rectangle with the height and
 the width as equal as possible in order to have the smallest perimeter
 and therefore the least neighbours.
 
-## Get slice portion
+### Get slice portion
 
 With a matrix size, two numbers, x and y, which makes a division of the
 matrix, and which portion is required, defined by two number a and b,
@@ -105,7 +106,7 @@ The last cell is the first plus the size of a portion, and if the rest
 was not handle by the previous portions, the current portion is
 increased by one.
 
-## Get neighbours
+### Get neighbours
 
 Each worker have eight neighbours, who can be themselves. To retrieve
 them, the first thing to do is to get his position x, y in the divided
@@ -116,9 +117,9 @@ Then the x, y position of the neighbours can be easily found and the
 process id of the neighbours are found by multiplying x by the number of
 portion on the width of the matrix and adding y.
 
-# Difficulties meet
+## Difficulties meet
 
-## Dividing the matrix
+### Dividing the matrix
 
 The way the matrix is divided is explained in the Algorithm section, the
 resulting portion does not always have the same size. If the width of
@@ -136,7 +137,7 @@ matrix is smaller, the process will send an impossible value (2 in the
 implementation), the master who gather the information will discard all
 the value if it is 2.
 
-## Number of process
+### Number of process
 
 There is one case where the number of process might be a problem, here
 is an example : the height of the matrix is 27 and the width is 5, if
@@ -148,7 +149,7 @@ than the number of line of the matrix then one process is discarded and
 the slice size is recalculated, in the example there would be 28 process
 which can be divided in 2\*14.
 
-## Protocol
+### Protocol
 
 In the first implementation of the protocol two parts were different.
 First the master would him only parse the matrix and then send it on the
@@ -161,7 +162,7 @@ number of communication was really bigger than the new protocol where
 the process only communicate with their neighbours and they send only
 useful information, only the perimeter of their computable matrix.
 
-# Conclusion
+## Conclusion
 
 The main difficulty of the project was to implement it on several
 process.\
